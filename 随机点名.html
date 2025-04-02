@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>抓人炼丹</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: #2c3e50;
+        }
+        .name-display {
+            font-size: 3rem;
+            font-weight: bold;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 2rem 0;
+            padding: 1rem 3rem;
+            border-radius: 8px;
+            background-color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            min-width: 300px;
+            text-align: center;
+        }
+        .special {
+            color: gold;
+            animation: glow 1s infinite alternate;
+        }
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 5px gold;
+            }
+            to {
+                text-shadow: 0 0 20px gold, 0 0 30px gold;
+            }
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            outline: none;
+        }
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        button:active {
+            background-color: #1a6ea0;
+            transform: translateY(0);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>抓人炼丹</h1>
+    <div class="name-display" id="nameDisplay">点击下方按钮开始</div>
+    <button id="drawButton" onmousedown="startDrawing()" onmouseup="stopDrawing()" ontouchstart="startDrawing()" ontouchend="stopDrawing()">按住开始抽取</button>
+
+    <script>
+        const students = [
+            "冯欣芮", "岑云云", "梅颖", "吴江华", "孙蓝津", 
+            "马海峰", "韩东鸽", "乔莹莹", "吴誉", "贾琦", 
+            "徐沁", "李冉", "汪嘉仪", "郭云萍", "何昊宣", 
+            "江淑怡", "何楠", "李文淑", "唐洁", "周佳梦", 
+            "卓建", "代丽华", "杨亚迪", "张晓芳", "朱能希"
+        ];
+        
+        const specialStudents = ["杨亚迪", "马海峰"];
+        let drawingInterval;
+        let isDrawing = false;
+        const nameDisplay = document.getElementById('nameDisplay');
+        const drawButton = document.getElementById('drawButton');
+        
+        function getRandomName() {
+            // 50%概率选择特殊学生
+            if (Math.random() < 0.5) {
+                return specialStudents[Math.floor(Math.random() * specialStudents.length)];
+            } else {
+                return students[Math.floor(Math.random() * students.length)];
+            }
+        }
+        
+        function startDrawing() {
+            if (isDrawing) return;
+            isDrawing = true;
+            nameDisplay.classList.remove('special');
+            
+            drawingInterval = setInterval(() => {
+                const randomName = getRandomName();
+                nameDisplay.textContent = randomName;
+            }, 100);
+            
+            drawButton.textContent = "松开停止";
+        }
+        
+        function stopDrawing() {
+            if (!isDrawing) return;
+            clearInterval(drawingInterval);
+            isDrawing = false;
+            drawButton.textContent = "按住开始抽取";
+            
+            // 最终选择的名字
+            const finalName = nameDisplay.textContent;
+            
+            // 如果是特殊学生，添加特效
+            if (specialStudents.includes(finalName)) {
+                nameDisplay.classList.add('special');
+            }
+        }
+        
+        // 防止触摸设备上的滚动
+        document.addEventListener('touchmove', function(e) {
+            if (isDrawing) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+    </script>
+</body>
+</html>
